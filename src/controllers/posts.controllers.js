@@ -9,16 +9,21 @@ class postsControllers {
         if (!verifyUser) {
           return reject("No existe el usuario que esta publicando");
         }
-        if (
-          !post.title ||
-          !post.description ||
-          !post.url_media
-        ) {
+        if (!post.title || !post.description || !post.url_media) {
           return reject("Faltan propiedades dentro del body");
         }
-        
-        if (!post.url_media.endsWith(".gif") && !post.url_media.endsWith(".png") && !post.url_media.endsWith(".jpg") && !post.url_media.endsWith(".jpeg") && !post.url_media.endsWith(".mp3") && !post.url_media.endsWith(".mp4")) {
-            return reject("No tiene formato multimedia el enlace multimedia de la prublicacion");
+
+        if (
+          !post.url_media.endsWith(".gif") &&
+          !post.url_media.endsWith(".png") &&
+          !post.url_media.endsWith(".jpg") &&
+          !post.url_media.endsWith(".jpeg") &&
+          !post.url_media.endsWith(".mp3") &&
+          !post.url_media.endsWith(".mp4")
+        ) {
+          return reject(
+            "No tiene formato multimedia el enlace multimedia de la prublicacion"
+          );
         }
         let today = new Date();
         let date = today.toISOString().slice(0, 10);
@@ -51,20 +56,25 @@ class postsControllers {
     return new Promise(async (resolve, reject) => {
       try {
         const lastPosts = await postsModel.findById(id); // Validamos que exista el usuario
-        console.log(lastPosts)
+        console.log(lastPosts);
         if (!lastPosts) {
           return reject("No existe la publicacion");
         }
-        if (
-          !post.title ||
-          !post.description ||
-          !post.url_media
-        ) {
+        if (!post.title || !post.description || !post.url_media) {
           return reject("Faltan propiedades dentro del body");
         }
-        
-        if (!post.url_media.endsWith(".gif") && !post.url_media.endsWith(".png") && !post.url_media.endsWith(".jpg") && !post.url_media.endsWith(".jpeg") && !post.url_media.endsWith(".mp3") && !post.url_media.endsWith(".mp4")) {
-            return reject("No tiene formato multimedia el enlace multimedia de la prublicacion");
+
+        if (
+          !post.url_media.endsWith(".gif") &&
+          !post.url_media.endsWith(".png") &&
+          !post.url_media.endsWith(".jpg") &&
+          !post.url_media.endsWith(".jpeg") &&
+          !post.url_media.endsWith(".mp3") &&
+          !post.url_media.endsWith(".mp4")
+        ) {
+          return reject(
+            "No tiene formato multimedia el enlace multimedia de la prublicacion"
+          );
         }
         const data = {
           username: lastPosts.username,

@@ -19,12 +19,27 @@ router.post("/add/:username", function (req, res, next) {
 
 /* Actualizar Publicaciones. */
 router.put("/update/:id", function (req, res, next) {
-    postsControllers
+  postsControllers
     .update(req.body, req.params.id)
     .then((resultado) => {
       res.status(201).json({
-        usuario_actualizado: resultado,
+        publicacion_actualizado: resultado,
         mensaje: "Editado con éxito la publicacion",
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error });
+    });
+});
+
+/* Eliminar Publicaciones. */
+router.delete("/delete/:id", function (req, res, next) {
+    postsControllers
+    .delete(req.params.id)
+    .then((resultado) => {
+      res.status(200).json({
+        publicacion_eliminado: resultado,
+        mensaje: "Eliminado con éxito la publicacion",
       });
     })
     .catch((error) => {

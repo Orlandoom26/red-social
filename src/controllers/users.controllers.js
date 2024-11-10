@@ -1,3 +1,4 @@
+const postsModel = require("../models/posts.model.js");
 const usersModel = require("../models/users.model.js");
 const bcrypt = require("bcrypt");
 
@@ -15,7 +16,6 @@ class usersControllers {
         ) {
           return reject("Faltan propiedades dentro del body");
         }
-        console.log(verifyUser)
         if (verifyUser.length > 0) {
           return reject("Ya esta registrado ese usuario");
         }
@@ -82,6 +82,7 @@ class usersControllers {
           return reject("No existe el usuario");
         }
         const datos = await usersModel.findByIdAndDelete(id); // Eliminamos el usuario
+        await postsModel.deleteMany({username: lastuser.username}); // Eliminamos el usuario
         if (datos) {
           return resolve(datos);
         }
