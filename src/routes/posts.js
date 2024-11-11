@@ -47,4 +47,19 @@ router.delete("/delete/:id", function (req, res, next) {
     });
 });
 
+/* Comentarios de una Publicacion. */
+router.get("/comments/:id", function (req, res, next) {
+  postsControllers
+  .comments(req.params.id)
+  .then((resultado) => {
+    res.status(200).json({
+      comentarios: resultado,
+      mensaje: "Comentarios de la publicacion",
+    });
+  })
+  .catch((error) => {
+    res.status(400).json({ error: error });
+  });
+});
+
 module.exports = router;

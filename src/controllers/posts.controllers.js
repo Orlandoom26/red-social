@@ -111,6 +111,20 @@ class postsControllers {
       }
     });
   }
+
+  async comments(id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const lastPosts = await postsModel.findById(id); // Validamos que exista la publicacion
+        if (!lastPosts) {
+          return reject("No existe la publicacion");
+        }
+        resolve(lastPosts.comments)
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }
 
 module.exports = new postsControllers();

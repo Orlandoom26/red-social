@@ -37,15 +37,60 @@ router.delete("/delete/:id", function (req, res, next) {
   usersControllers
     .delete(req.params.id, req.body)
     .then((resultado) => {
-      res
-        .status(200)
-        .json({
-          usuario_eliminado: resultado,
-          mensaje: "Eliminado con éxito el usuario",
-        });
+      res.status(200).json({
+        usuario_eliminado: resultado,
+        mensaje: "Eliminado con éxito el usuario",
+      });
     })
     .catch((error) => {
       res.status(400).json({ error: error });
+    });
+});
+
+/* Publicaciones de Usuarios. */
+router.get("/posts/:username", function (req, res, next) {
+  usersControllers
+    .userPosts(req.params.username)
+    .then((resultado) => {
+      res.status(200).json({
+        publicaciones_usuario: resultado,
+        mensaje: "Publicaciones ",
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error });
+    });
+});
+
+/* Feed de un Usuario. */
+router.get("/feed/:username", function (req, res, next) {
+  usersControllers
+    .feed(req.params.username)
+    .then((resultado) => {
+      res.status(200).json({
+        feed: resultado,
+        mensaje: "Se ha cargado la feed exitosamente",
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error });
+    });
+});
+
+// Iniciar Sesion
+router.post("/login", function (req, res, next) {
+  usersControllers
+    .login(req.body)
+    .then((resultado) => {
+      res
+        .status(200)
+        .json({
+          data: resultado,
+          mensaje: "Has iniciado sesion con exito",
+        });
+    })
+    .catch((error) => {
+      res.status(400).json({ mensaje: error });
     });
 });
 

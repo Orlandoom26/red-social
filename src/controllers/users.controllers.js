@@ -1,3 +1,4 @@
+const crearToken = require("../jwt/create.js");
 const postsModel = require("../models/posts.model.js");
 const usersModel = require("../models/users.model.js");
 const bcrypt = require("bcrypt");
@@ -43,6 +44,38 @@ class usersControllers {
     });
   }
 
+  async login(user) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const userVerify = await usersModel.findOne({
+          username: user.username,
+        }); // Verificamos si existe el usuario
+        if (!userVerify) {
+          return reject("El usuario no existe");
+        }
+        const passwordInvalid = await bcrypt.compare(
+          user.password,
+          userVerify.password
+        ); // Comparamos las contraseñas si son iguales
+        if (!passwordInvalid) {
+          return reject("La contraseña es incorrecta");
+        }
+        let token = crearToken({
+          id: userVerify._id,
+          usuario: userVerify.username,
+          rol: userVerify.rol,
+        });
+        resolve({
+          token: token,
+          "username": userVerify.username,
+          rol: userVerify.rol,
+        });
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
   async edit(user, id) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -82,11 +115,49 @@ class usersControllers {
           return reject("No existe el usuario");
         }
         const datos = await usersModel.findByIdAndDelete(id); // Eliminamos el usuario
-        await postsModel.deleteMany({username: lastuser.username}); // Eliminamos el usuario
+        await postsModel.deleteMany({ username: lastuser.username }); // Eliminamos el usuario
         if (datos) {
           return resolve(datos);
         }
         return reject("No se pudo eliminar el usuario");
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  async userPosts(username) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = await usersModel.findOne({ username: username });
+        if (!user) {
+          return reject("No existe el usuario");
+        }
+        const posts = await postsModel.find({ username: username });
+        if (posts) {
+          return resolve(posts);
+        }
+        return reject(`No se pudo obtener las publicaciones de ${username}`);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  async feed(username) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = await usersModel.findOne({ username: username });
+        const feed = [];
+        for (let i = 0; i < user.friends.length; i++) {
+          const posts = await postsModel.find({
+            username: user.friends[i].user,
+          });
+          if (posts.length > 0) {
+            feed.push(posts[posts.length - 1]);
+          }
+        }
+        return resolve(feed);
       } catch (error) {
         return reject(error);
       }
