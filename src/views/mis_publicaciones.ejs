@@ -45,11 +45,18 @@
                 <div class="card-body">
                     <h5 class="card-title"><%= row.title %></h5>
                     <p class="card-text"><%= row.description %></p>
-                     <form action="/comentarios/<%= row._id %>" method="post">
-                        <input class="invisible" style="position: absolute;" type="text" name="username" id="username" value="<%= data.username %>">
-                        <input class="invisible" style="position: absolute;" type="text" name="token" id="token" value="<%= data.token %>">
-                        <button type="submit" class="btn btn-success">Comentarios</button>
-                    </form>
+                    <div class="d-flex gap-2">
+                        <form action="/comentarios/<%= row._id %>" method="post">
+                            <input class="invisible" style="position: absolute;" type="text" name="username" id="username" value="<%= data.username %>">
+                            <input class="invisible" style="position: absolute;" type="text" name="token" id="token" value="<%= data.token %>">
+                            <button type="submit" class="btn btn-success">Comentarios</button>
+                        </form>
+                        <form action="/publicacion/eliminar/<%= row._id %>" method="post">
+                            <input class="invisible" style="position: absolute;" type="text" name="username" id="username" value="<%= data.username %>">
+                            <input class="invisible" style="position: absolute;" type="text" name="token" id="token" value="<%= data.token %>">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         <% }) %>

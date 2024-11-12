@@ -108,4 +108,20 @@ router.post("/mis-publicaciones", function (req, res, next) {
     });
 });
 
+/* Eliminar Publicaciones. */
+router.post("/publicacion/eliminar/:id", function (req, res, next) {
+  postsControllers
+  .delete(req.body.token, req.params.id)
+  .then((resultado) => {
+    res.render("home", {
+      data: resultado,
+      mensaje: "Eliminado con éxito la publicacion",
+      tipo: "amarillo"
+    });
+  })
+  .catch((error) => {
+    res.status(400).json({ error: error });
+  });
+});
+
 module.exports = router;
