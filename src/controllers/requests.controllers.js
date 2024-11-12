@@ -137,6 +137,54 @@ class requestsControllers {
       }
     });
   }
+
+  async listFriends(token, username) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const acceso = await autenticacion(token, ["user", "admin"]);
+        if (acceso.mensaje != "acceso permitido") {
+          return reject(acceso.mensaje);
+        }
+        const user = await usersModel.findOne({ username: username });
+        if (!user) {
+          return reject(
+            "No existe el usuario que esta enviando la solicitud de amistad"
+          );
+        }
+        return resolve({
+          token: token,
+          username: username,
+          friends: user.friends
+        })
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  async listRequest(token, username) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const acceso = await autenticacion(token, ["user", "admin"]);
+        if (acceso.mensaje != "acceso permitido") {
+          return reject(acceso.mensaje);
+        }
+        const user = await usersModel.findOne({ username: username });
+        if (!user) {
+          return reject(
+            "No existe el usuario que esta enviando la solicitud de amistad"
+          );
+        }
+        return resolve({
+          token: token,
+          username: username,
+          friendsRequest: user.friendRequest
+        })
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }
 
 module.exports = new requestsControllers();

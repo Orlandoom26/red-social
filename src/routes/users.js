@@ -35,7 +35,7 @@ router.put("/update/:id", function (req, res, next) {
 /* Eliminar Usuarios. */
 router.delete("/delete/:id", function (req, res, next) {
   usersControllers
-    .delete(req.body.token, req.params.id, req.body)
+    .delete(req.body.token, req.params.id)
     .then((resultado) => {
       res.status(200).json({
         usuario_eliminado: resultado,

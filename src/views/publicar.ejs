@@ -18,7 +18,11 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark " style="height: 75px;">
         <div id="my-nav" class="container collapse navbar-collapse">
-            <a href="" class="navbar-brand">Red Social UVM</a>
+            <form action="/home" method="post">
+                <input class="invisible" style="position: absolute;" type="text" name="username" id="username" value="<%= data.username %>">
+                <input class="invisible" style="position: absolute;" type="text" name="token" id="token" value="<%= data.token %>">
+                <button type="submit" class="navbar-brand bg-transparent" style="border: none;">Red Social UVM</button>
+            </form>
             <button class="navbar-toggler" data-bs-target="#my-nav" data-bs-toggle="collapse" aria-controls="my-nav"
                 aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
