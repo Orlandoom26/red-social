@@ -21,7 +21,7 @@ router.post("/incio-sesion", function (req, res, next) {
       res.render("home", {
         data: resultado,
         mensaje: "Has iniciado sesion con exito",
-        tipo: "verde"
+        tipo: "verde",
       });
     })
     .catch((error) => {
@@ -31,7 +31,7 @@ router.post("/incio-sesion", function (req, res, next) {
 
 /* GET home page. */
 router.post("/publicar", function (req, res, next) {
-  console.log(req.body)
+  console.log(req.body);
   res.render("publicar", {
     data: { username: req.body.username, token: req.body.token },
   });
@@ -45,12 +45,52 @@ router.post("/publicar/add", function (req, res, next) {
       res.render("home", {
         data: resultado,
         mensaje: "Se ha realizado la publicacion",
-        tipo: "verde"
+        tipo: "verde",
       });
     })
     .catch((error) => {
       res.status(400).json({ error: error });
     });
+});
+
+/* Feed de un Usuario. */
+router.post("/feed", function (req, res, next) {
+  usersControllers
+    .feed(req.body.token, req.body.username)
+    .then((resultado) => {
+      console.log(resultado);
+      res.render("feed", {
+        data: resultado,
+        mensaje: "Se ha cargado la feed exitosamente",
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error });
+    });
+});
+
+/* retorno home*/
+router.post("/home", function (req, res, next) {
+  res.render("home", {
+    data: { username: req.body.username, token: req.body.token },
+    mensaje: "Has regresado a home",
+    tipo: "verde",
+  });
+});
+
+/* Comentarios de una Publicacion. */
+router.post("/comentarios/:id", function (req, res, next) {
+  postsControllers
+  .comments(req.body.token, req.params.id)
+  .then((resultado) => {
+    res.render("comentarios", {
+      data: resultado,
+      mensaje: "Comentarios de la publicacion",
+    });
+  })
+  .catch((error) => {
+    res.status(400).json({ error: error });
+  });
 });
 
 module.exports = router;
