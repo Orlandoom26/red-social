@@ -93,4 +93,19 @@ router.post("/comentarios/:id", function (req, res, next) {
   });
 });
 
+/* Publicaciones de Usuarios. */
+router.post("/mis-publicaciones", function (req, res, next) {
+  usersControllers
+    .userPosts(req.body.token, req.body.username)
+    .then((resultado) => {
+      res.render("mis_publicaciones.ejs", {
+        data: resultado,
+        mensaje: "Publicaciones",
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error });
+    });
+});
+
 module.exports = router;

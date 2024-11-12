@@ -100,7 +100,11 @@
                 <div class="card-body">
                   <h5 class="card-title">MIS PUBLICACIONES</h5>
                   <p class="card-text">Aquí se encuentras todas tus publicaciones.</p>
-                  <button disabled href="#" class="btn btn-success">Entrar</button>
+                  <form action="/mis-publicaciones" method="post">
+                    <input class="invisible" style="position: absolute;" type="text" name="username" id="username" value="<%= data.username %>">
+                    <input class="invisible" style="position: absolute;" type="text" name="token" id="token" value="<%= data.token %>">
+                    <button type="submit" class="btn btn-success">Entrar</button>
+                  </form>
                 </div>
             </div>
         </div>
