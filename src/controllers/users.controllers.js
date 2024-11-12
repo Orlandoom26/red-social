@@ -1,3 +1,4 @@
+const { autenticacion } = require("../jwt/autenticacion.js");
 const crearToken = require("../jwt/create.js");
 const postsModel = require("../models/posts.model.js");
 const usersModel = require("../models/users.model.js");
@@ -62,7 +63,7 @@ class usersControllers {
         }
         let token = crearToken({
           id: userVerify._id,
-          usuario: userVerify.username,
+          username: userVerify.username,
           rol: userVerify.rol,
         });
         resolve({
@@ -76,9 +77,13 @@ class usersControllers {
     });
   }
 
-  async edit(user, id) {
+  async edit(token, user, id) {
     return new Promise(async (resolve, reject) => {
       try {
+        const acceso = await autenticacion(token, ["user", "admin"]);
+        if (acceso.mensaje != "acceso permitido") {
+          return reject(acceso.mensaje);
+        }
         const lastuser = await usersModel.findById(id); // Validamos que exista el usuario
         if (!lastuser) {
           return reject("No existe el usuario");
@@ -98,7 +103,11 @@ class usersControllers {
         };
         const datos = await usersModel.findByIdAndUpdate(id, data); // Creamos el usuario
         if (datos) {
-          return resolve(datos);
+          return resolve({
+            editado: datos,
+            token: token,
+            username: acceso.username
+          });
         }
         return reject("No se pudo editar el usuario");
       } catch (error) {
@@ -107,9 +116,13 @@ class usersControllers {
     });
   }
 
-  async delete(id) {
+  async delete(token, id) {
     return new Promise(async (resolve, reject) => {
       try {
+        const acceso = await autenticacion(token, ["admin"]);
+        if (acceso.mensaje != "acceso permitido") {
+          return reject(acceso.mensaje);
+        }
         const lastuser = await usersModel.findById(id); // Validamos que exista el usuario
         if (!lastuser) {
           return reject("No existe el usuario");
@@ -117,7 +130,11 @@ class usersControllers {
         const datos = await usersModel.findByIdAndDelete(id); // Eliminamos el usuario
         await postsModel.deleteMany({ username: lastuser.username }); // Eliminamos el usuario
         if (datos) {
-          return resolve(datos);
+          return resolve({
+            eliminado: datos,
+            token: token,
+            username: acceso.username
+          });
         }
         return reject("No se pudo eliminar el usuario");
       } catch (error) {
@@ -126,16 +143,24 @@ class usersControllers {
     });
   }
 
-  async userPosts(username) {
+  async userPosts(token, username) {
     return new Promise(async (resolve, reject) => {
       try {
+        const acceso = await autenticacion(token, ["user", "admin"]);
+        if (acceso.mensaje != "acceso permitido") {
+          return reject(acceso.mensaje);
+        }
         const user = await usersModel.findOne({ username: username });
         if (!user) {
           return reject("No existe el usuario");
         }
         const posts = await postsModel.find({ username: username });
         if (posts) {
-          return resolve(posts);
+          return resolve({
+            publicaciones: posts,
+            token: token,
+            username: acceso.username
+          });
         }
         return reject(`No se pudo obtener las publicaciones de ${username}`);
       } catch (error) {
@@ -144,9 +169,13 @@ class usersControllers {
     });
   }
 
-  async feed(username) {
+  async feed(token, username) {
     return new Promise(async (resolve, reject) => {
       try {
+        const acceso = await autenticacion(token, ["user", "admin"]);
+        if (acceso.mensaje != "acceso permitido") {
+          return reject(acceso.mensaje);
+        }
         const user = await usersModel.findOne({ username: username });
         const feed = [];
         for (let i = 0; i < user.friends.length; i++) {
@@ -157,7 +186,11 @@ class usersControllers {
             feed.push(posts[posts.length - 1]);
           }
         }
-        return resolve(feed);
+        return resolve({
+          feed: feed,
+          token: token,
+          username: acceso.username
+        });
       } catch (error) {
         return reject(error);
       }

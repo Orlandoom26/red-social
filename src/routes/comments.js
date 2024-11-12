@@ -5,7 +5,7 @@ let router = express.Router();
 /* Registrar Comentario. */
 router.post("/add/:username/:postId", function (req, res, next) {
   commentsControllers
-    .add(req.body, req.params.username, req.params.postId)
+    .add(req.body.token, req.body, req.params.username, req.params.postId)
     .then((resultado) => {
       res.status(201).json({
         comentario_realizado: resultado,

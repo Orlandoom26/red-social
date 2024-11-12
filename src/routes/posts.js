@@ -5,7 +5,7 @@ const postsControllers = require("../controllers/posts.controllers");
 /* Registrar Publicaciones. */
 router.post("/add/:username", function (req, res, next) {
   postsControllers
-    .add(req.body, req.params.username)
+    .add(req.body.token, req.body, req.params.username)
     .then((resultado) => {
       res.status(201).json({
         publicacion_realizada: resultado,
@@ -20,7 +20,7 @@ router.post("/add/:username", function (req, res, next) {
 /* Actualizar Publicaciones. */
 router.put("/update/:id", function (req, res, next) {
   postsControllers
-    .update(req.body, req.params.id)
+    .update(req.body.token, req.body, req.params.id)
     .then((resultado) => {
       res.status(201).json({
         publicacion_actualizado: resultado,
@@ -35,7 +35,7 @@ router.put("/update/:id", function (req, res, next) {
 /* Eliminar Publicaciones. */
 router.delete("/delete/:id", function (req, res, next) {
     postsControllers
-    .delete(req.params.id)
+    .delete(req.body.token, req.params.id)
     .then((resultado) => {
       res.status(200).json({
         publicacion_eliminado: resultado,
@@ -50,7 +50,7 @@ router.delete("/delete/:id", function (req, res, next) {
 /* Comentarios de una Publicacion. */
 router.get("/comments/:id", function (req, res, next) {
   postsControllers
-  .comments(req.params.id)
+  .comments(req.body.token, req.params.id)
   .then((resultado) => {
     res.status(200).json({
       comentarios: resultado,

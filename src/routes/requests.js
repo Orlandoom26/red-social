@@ -5,7 +5,7 @@ let router = express.Router();
 /* Enviar Solicitud de Amistad. */
 router.post("/send/:username/:usernameFriend", function (req, res, next) {
   requestsControllers
-    .sendRequest(req.params.username, req.params.usernameFriend)
+    .sendRequest(req.body.token, req.params.username, req.params.usernameFriend)
     .then((resultado) => {
       res.status(201).json({
         solicitud_enviada: resultado,
@@ -20,7 +20,7 @@ router.post("/send/:username/:usernameFriend", function (req, res, next) {
 /* Aceptar Solicitud de Amistad. */
 router.post("/accept/:username/:usernameFriend", function (req, res, next) {
     requestsControllers
-      .acceptRequest(req.params.username, req.params.usernameFriend)
+      .acceptRequest(req.body.token, req.params.username, req.params.usernameFriend)
       .then((resultado) => {
         res.status(201).json({
           solicitud_aceptada: resultado,

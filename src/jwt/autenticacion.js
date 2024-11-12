@@ -38,12 +38,12 @@ async function autenticacionPorHeader (req, res, next, roles) {
 async function autenticacion (token, roles) {
     try {
         if (token === undefined) {
-            return 'Debes suministrar un token de sesion' // Debes suministrar un token de sesion
+            return ({mensaje: 'Debes suministrar un token de sesion'}) // Debes suministrar un token de sesion
         }
         const tokenData = await verifyToken(token)
         if (tokenData.data.id) {
             if (roles.includes(tokenData.data.rol)){
-                return ({token: tokenData.data, mensaje: 'acceso permitido'})
+                return ({token: tokenData.data, mensaje: 'acceso permitido', username: tokenData.data.username})
             }else{
                 return ({mensaje: 'No tienes permisos con ese rol'}) // No tienes permisos con ese rol
             }

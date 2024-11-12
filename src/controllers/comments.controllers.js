@@ -6,6 +6,10 @@ class commentsControllers {
   async add(comment, username, posts) {
     return new Promise(async (resolve, reject) => {
       try {
+        const acceso = await autenticacion(comment.token, ["user", "admin"]);
+        if (acceso.mensaje != "acceso permitido") {
+          return reject(acceso.mensaje);
+        }
         const post = await postsModel.findById(posts); // Validamos que no se repitan los usuarios
         const verifyUser = await usersModel.findOne({ username: username }); // Validamos que no se repitan los usuarios
         if (!post) {
@@ -35,7 +39,11 @@ class commentsControllers {
         post.comments.push(data);
         const datos = await postsModel.findByIdAndUpdate(posts, post); // Creamos el usuario
         if (datos) {
-          return resolve(post);
+          return resolve({
+            comentario: post,
+            token: comment.token,
+            username: acceso.username
+          });
         }
         return reject("No se pudo publicar el resultado");
       } catch (error) {

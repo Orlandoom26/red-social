@@ -1,9 +1,14 @@
+const { autenticacion } = require("../jwt/autenticacion");
 const usersModel = require("../models/users.model");
 
 class requestsControllers {
-  async sendRequest(username, usernameFriend) {
+  async sendRequest(token, username, usernameFriend) {
     return new Promise(async (resolve, reject) => {
       try {
+        const acceso = await autenticacion(token, ["user", "admin"]);
+        if (acceso.mensaje != "acceso permitido") {
+          return reject(acceso.mensaje);
+        }
         if (username === usernameFriend) {
           return reject(
             "No te puedes enviar una solicitud de amistad a ti mismo"
@@ -56,9 +61,11 @@ class requestsControllers {
         ); // Creamos el usuario
         console.log(datos);
         if (datos) {
-          return resolve(
-            `Has enviado la solicitud al usuario ${usernameFriend}`
-          );
+          return resolve({
+            token: token,
+            solicitud: `Has enviado la solicitud al usuario ${usernameFriend}`,
+            username: acceso.username
+          });
         }
         return reject("No se pudo enviar la solicitud");
       } catch (error) {
@@ -67,9 +74,13 @@ class requestsControllers {
     });
   }
 
-  async acceptRequest(username, usernameFriend) {
+  async acceptRequest(token, username, usernameFriend) {
     return new Promise(async (resolve, reject) => {
       try {
+        const acceso = await autenticacion(token, ["user", "admin"]);
+        if (acceso.mensaje != "acceso permitido") {
+          return reject(acceso.mensaje);
+        }
         if (username === usernameFriend) {
           return reject(
             "No te puedes aceptar una solicitud de amistad a ti mismo"
@@ -100,8 +111,8 @@ class requestsControllers {
         for (let i = 0; i < user.friendRequest.length; i++) {
           if (user.friendRequest[i].user === usernameFriend) {
             userFriend.friends.push({
-                user: username,
-                dateTime: user.friendRequest[i].dateTime
+              user: username,
+              dateTime: user.friendRequest[i].dateTime,
             });
             user.friends.push(user.friendRequest[i]);
             user.friendRequest.splice(i, 1);
@@ -115,9 +126,11 @@ class requestsControllers {
         await usersModel.findByIdAndUpdate(userFriend._id, userFriend);
         const datos = await usersModel.findByIdAndUpdate(user._id, user); // Creamos el usuario
         if (datos) {
-          return resolve(
-            `Eres Amigo del usuario ${usernameFriend}`
-          );
+          return resolve({
+            solicitud: `Eres Amigo del usuario ${usernameFriend}`,
+            token: token,
+            username: acceso.username
+          });
         }
       } catch (error) {
         return reject(error);

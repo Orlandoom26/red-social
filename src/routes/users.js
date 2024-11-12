@@ -20,7 +20,7 @@ router.post("/register", function (req, res, next) {
 /* Actualizar Usuarios. */
 router.put("/update/:id", function (req, res, next) {
   usersControllers
-    .edit(req.body, req.params.id)
+    .edit(req.body.token, req.body, req.params.id)
     .then((resultado) => {
       res.status(201).json({
         usuario_actualizado: resultado,
@@ -35,7 +35,7 @@ router.put("/update/:id", function (req, res, next) {
 /* Eliminar Usuarios. */
 router.delete("/delete/:id", function (req, res, next) {
   usersControllers
-    .delete(req.params.id, req.body)
+    .delete(req.body.token, req.params.id, req.body)
     .then((resultado) => {
       res.status(200).json({
         usuario_eliminado: resultado,
@@ -50,7 +50,7 @@ router.delete("/delete/:id", function (req, res, next) {
 /* Publicaciones de Usuarios. */
 router.get("/posts/:username", function (req, res, next) {
   usersControllers
-    .userPosts(req.params.username)
+    .userPosts(req.body.token, req.params.username)
     .then((resultado) => {
       res.status(200).json({
         publicaciones_usuario: resultado,
@@ -65,7 +65,7 @@ router.get("/posts/:username", function (req, res, next) {
 /* Feed de un Usuario. */
 router.get("/feed/:username", function (req, res, next) {
   usersControllers
-    .feed(req.params.username)
+    .feed(req.body.token, req.params.username)
     .then((resultado) => {
       res.status(200).json({
         feed: resultado,
