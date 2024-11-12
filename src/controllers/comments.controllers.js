@@ -1,12 +1,13 @@
+const { autenticacion } = require("../jwt/autenticacion");
 const postsModel = require("../models/posts.model");
 const usersModel = require("../models/users.model");
 const { v4: uuidv4 } = require("uuid");
 
 class commentsControllers {
-  async add(comment, username, posts) {
+  async add(token, comment, username, posts) {
     return new Promise(async (resolve, reject) => {
       try {
-        const acceso = await autenticacion(comment.token, ["user", "admin"]);
+        const acceso = await autenticacion(token, ["user", "admin"]);
         if (acceso.mensaje != "acceso permitido") {
           return reject(acceso.mensaje);
         }
@@ -41,7 +42,7 @@ class commentsControllers {
         if (datos) {
           return resolve({
             comentario: post,
-            token: comment.token,
+            token: token,
             username: acceso.username
           });
         }
